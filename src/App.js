@@ -1,25 +1,48 @@
-import logo from './logo.svg';
 import './App.css';
+import Sidebar from './Sidebar';
+import Feed from './Feed'
+import Widgets from './Widgets'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Login from './Login';
+import SignUp from './SignUp';
+import  {AuthContextProvider, PrivateRoute,AuthenticatedRoute} from './useAuth';
+import NOtFound from './NOtFound';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app"> 
+      <AuthContextProvider> 
+      <Router>
+         <Switch>
+         <PrivateRoute exact path="/"> 
+           <Sidebar></Sidebar>
+            <Feed></Feed>
+           <Widgets></Widgets> 
+           </PrivateRoute>
+          <AuthenticatedRoute path="/login" > 
+          <Login></Login>
+           </AuthenticatedRoute>
+           <Route path="/signup" > 
+           <SignUp></SignUp>
+           </Route>
+
+            
+
+           <Route   path="*">
+             <NOtFound></NOtFound>
+           </Route>
+        </Switch>
+      </Router>
+      </AuthContextProvider>
+      
     </div>
   );
 }
-
+// 10.0.19041.488
 export default App;
