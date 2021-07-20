@@ -25,10 +25,10 @@ const Widgets = () => {
                 options={{ height: 400 }}
                 />
 
-                <TwitterShareButton
+                {/* <TwitterShareButton
                  
                 url={"https://facebook.com/interpid.pronay"}
-                options={{ text: "#reactjs is awesome", via: "Saurav Barua" }}/>
+                options={{ text: "#reactjs is awesome", via: "Saurav Barua" }}/> */}
             </div>
         </div>
     );

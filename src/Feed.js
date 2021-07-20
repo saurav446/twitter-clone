@@ -30,7 +30,7 @@ const Feed = () => {
                     verified={post.verified}
                     text={post.text}
                     image={post.image}
-                    avatar={post.avatar} 
+                    avater={post.avater} 
                     timestamp={post.timestamp}
                     />        
                 ) 

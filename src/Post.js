@@ -14,7 +14,7 @@ import { useEffect } from 'react';
 import Moment from 'react-moment';
 
 
-const Post = ({displayName,username,verified,text,image,postId,timestamp}) => {
+const Post = ({displayName,username,verified,text,image,postId,timestamp,avater}) => {
      
        
     const auth = Auth();
@@ -73,7 +73,7 @@ const Post = ({displayName,username,verified,text,image,postId,timestamp}) => {
     return (
         <div className="post"> 
           <div  className="post__avatar">
-             <Avatar src={auth.user?.photoURL}  alt={auth.user?.displayName} ></Avatar>
+             <Avatar src={avater}  alt={displayName} ></Avatar>
           </div>  
           <div className="post__body">
               <div className="post__header">
@@ -84,15 +84,15 @@ const Post = ({displayName,username,verified,text,image,postId,timestamp}) => {
                               {verified &&  <VerifiedUserIcon className="post__badge" /> }
                                {username}  . 
                                <Moment format="D MMM YYYY" withTitle>
-                        {timestamp !== null
-                          ? new Date(timestamp.seconds * 1000).toLocaleDateString('en-US')
-                          : null}
-                      </Moment>   
+                                {timestamp !== null
+                                  ? new Date(timestamp.seconds * 1000).toLocaleDateString('en-US')
+                                  : null}
+                              </Moment>   
                             </span> 
                         </h3> 
                   </div>
                   <div className="post__headerDescription">
-                    <p  className="text__p">
+                    <p className="text__p">
                     {text}  
                     </p>
                   </div>

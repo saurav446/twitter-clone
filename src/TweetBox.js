@@ -45,6 +45,7 @@ const TweetBox = () => {
                 })
             }
         )
+        setTweetMessege('')
     }
     const auth = Auth(); 
     return (
