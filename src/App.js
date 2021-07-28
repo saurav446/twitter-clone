@@ -10,28 +10,39 @@ import {
 } from "react-router-dom";
 import Login from './Login';
 import SignUp from './SignUp';
-import  {AuthContextProvider, PrivateRoute,AuthenticatedRoute} from './useAuth';
-import NOtFound from './NOtFound';
+import    Auth, {AuthContextProvider, PrivateRoute,AuthenticatedRoute} from './useAuth';
+import NOtFound from './NOtFound'; 
+import { useState } from 'react';
+ 
+ 
 
 
 function App() {
+   const [loading,setLoading] = useState(false)
+
+   const auth = Auth();
+  
   return (
     <div className="app"> 
       <AuthContextProvider> 
       <Router>
          <Switch>
+         
          <PrivateRoute exact path="/"> 
            <Sidebar></Sidebar>
-            <Feed></Feed>
-           <Widgets></Widgets> 
-           </PrivateRoute>
+           <Feed></Feed>
+          <Widgets></Widgets>  
+           </PrivateRoute> 
+
           <AuthenticatedRoute path="/login" > 
           <Login></Login>
            </AuthenticatedRoute>
-           <Route path="/signup" > 
-           <SignUp></SignUp>
-           </Route>
 
+
+           <AuthenticatedRoute path="/signup" > 
+           <SignUp></SignUp>
+           </AuthenticatedRoute>
+            
             
 
            <Route   path="*">

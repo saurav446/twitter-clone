@@ -1,7 +1,13 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { firebaseApp } from './firebase';  
 import firebase from 'firebase/app';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';  
+
+import Button from '@material-ui/core/Button';
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Alert from '@material-ui/lab/Alert';
 
 
 const AuthContext = createContext();
@@ -28,12 +34,13 @@ export function AuthenticatedRoute({ children, ...rest }) {
             }}
           />
         ) : (
-          children
+         children
         )
       }
     />
   );
 }
+ 
  
 export function PrivateRoute({ children, ...rest }) {
   let auth = useAuth();
@@ -41,7 +48,7 @@ export function PrivateRoute({ children, ...rest }) {
     <Route
       {...rest}
       render={({ location }) =>
-        auth.user ? (
+        auth.user ?  (
           children
         ) : (
           <Redirect
@@ -57,8 +64,9 @@ export function PrivateRoute({ children, ...rest }) {
 }
 
 const Auth = () => {
-  const [user, setUser] = useState(null); 
- 
+  const [user, setUser] = useState(null);  
+  const [error,setError] = useState(false); 
+  const [open, setOpen] = useState(false);
 
   const signup = (name, email, password, url) => {
     firebaseApp
@@ -73,27 +81,34 @@ const Auth = () => {
           })
           .then(() => {
             setUser(res.user);
-            alert('Sign up successfully completed!');
-            window.location.pathname = '/';
+            // alert('Sign up successfully completed!');
+            const success = 'Sign up successfully completed!'; 
+            setError(success) 
+            setOpen(true)   
+             window.location.replace('/');
           });
       })
-      .catch((error) => alert(error.message));
+      .catch((error) =>{
+        setError(error.message);
+        setOpen(true);  
+      });
   };
-
-
-
-
-
+ 
   const login = (email, password) => {
     firebaseApp
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
         setUser(res.user);
-        alert('Login Successful!');
-        window.location.pathname = '/';
+        const success = 'Login Successful!'; 
+        setError(success) 
+        setOpen(true)  
+        window.location.replace('/'); 
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {   
+        setError(error.message);
+        setOpen(true);   
+      }); 
   };
 
   const logout = () => {
@@ -102,7 +117,7 @@ const Auth = () => {
       .signOut()
       .then((res) => {
         setUser(null);
-        window.location.replace('/');
+        window.location.replace('/login');
       })
       .catch((error) => alert(error.message));
   };
@@ -113,9 +128,7 @@ const Auth = () => {
     firebase.auth().onAuthStateChanged(function (usr) {
       if (usr) {
         setUser(usr);
-      } else {
-        // No user is signed in.
-      }
+      }  
     });
   }, []);
    
@@ -123,7 +136,10 @@ const Auth = () => {
     signup,
     user,
     login,
-    logout 
+    logout,
+    error, 
+    open,
+    setOpen
   };
 };
 export default Auth;

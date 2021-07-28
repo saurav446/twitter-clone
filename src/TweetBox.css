@@ -6,9 +6,7 @@
     flex-direction: column;
 }
 
-.tweetBox__input{
-    padding-right: 20px;
-    padding-left: 20px;
+.tweetBox__input{ 
     padding-bottom: 0;
     padding-top: 10px;
     display: flex;

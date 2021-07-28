@@ -11,15 +11,49 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import { useState } from 'react';
 import db from './firebase';
 import { useEffect } from 'react'; 
-import Moment from 'react-moment';
+import Moment from 'react-moment'; 
+import { makeStyles } from '@material-ui/core/styles';
+import Modal from '@material-ui/core/Modal';
 
+
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: '70vw !important',
+    height: '90vh',
+    overflow: 'scroll',
+    paddingLeft: '10px !important',
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid var(--twitter-color)',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 const Post = ({displayName,username,verified,text,image,postId,timestamp,avater}) => {
      
        
-    const auth = Auth();
+  const auth = Auth();
   const [love, setLove] = useState(false);
-  const [loves, setLoves] = useState(); 
+  const [loves, setLoves] = useState();  
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+  const [totalComments, setTotalComments] = useState(null);
+  const classes = useStyles();
+  const [replayTweet, setReplayTweet] = useState('');
+
   useEffect(() => { 
     if (postId) { 
       db.collection('post')
@@ -34,6 +68,37 @@ const Post = ({displayName,username,verified,text,image,postId,timestamp,avater}
   }, [postId]);
 
   useEffect(() => {
+    if (postId) {
+      db.collection('post')
+        .doc(postId)
+        .collection('comments')
+        .onSnapshot((snapshot) => {
+          setTotalComments(
+            snapshot.docs.map((doc) => ({ id: doc.id, comment: doc.data() }))
+          );
+        });
+    }
+  }, [postId]);
+
+
+  const addComments = () => {
+    db.collection('post').doc(postId).collection('comments').add({
+      replayTweet: replayTweet,
+      avater: auth.user?.photoURL,
+      displayName: auth.user?.displayName,
+    });
+    setReplayTweet(''); 
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  useEffect(() => {
     const isLove = loves?.find(({ id, love }) => love.uid === auth.user?.uid);
 
     if (isLove !== undefined) {
@@ -45,7 +110,7 @@ const Post = ({displayName,username,verified,text,image,postId,timestamp,avater}
     db.collection('post').doc(postId).collection('loves').add({
       uid: auth.user?.uid,
     });
-  };
+  }; 
   const outLoves = (id) => {
     db.collection('post').doc(postId).collection('loves').doc(id).delete();
   };
@@ -68,6 +133,82 @@ const Post = ({displayName,username,verified,text,image,postId,timestamp,avater}
     setLove(true);
     inLoves();
   };
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+
+      <div className="post">
+        <Avatar src={avater} alt={displayName} />
+        <div className="post__main__body">
+       
+          <div className="post__header">
+            <h4 style={{marginLeft:'5px'}}>{displayName}</h4>
+            
+          </div>
+          <div className="post__body">
+            <p>{text}</p>
+            <p>
+              Replay Tweet {' '}
+              <span style={{ color: 'var(--twitter-color)' }}>{username}</span>
+            </p>
+            
+          </div>
+        </div>
+      </div>
+      <div> 
+        {totalComments?.map(({ id, comment }) => (
+          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <Avatar src={comment.avater} alt={comment.displayName} />
+            <div style={{ marginLeft: '10px' }}>
+              <span style={{ color: 'var(--twitter-color' }}>
+                {comment.displayName}
+              </span>
+              <p style={{ fontWeight: 'bold' }}>{comment.replayTweet}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div
+        className="tweetBox__input"
+        style={{
+          display: 'flex !important',
+          alighItems: 'flex-start !important',
+          padding: '6px !important'
+        }}
+      >
+        <Avatar src={auth.user?.photoURL} alt={auth.user?.displayName} /> 
+        <textarea
+          placeholder="Add  your comment"
+          value={replayTweet}
+          onChange={(e) => setReplayTweet(e.target.value)}
+          cols="30"
+          rows="4"
+        ></textarea>
+      </div>
+      <div className="tweetBox__upload">
+        <Button
+          onClick={addComments}
+          disabled={!replayTweet}
+          className="tweetBox__button"
+        >
+          Tweet
+        </Button>
+      </div>
+      <span
+            style={{
+              fontSize: '21px',
+              fontWeight: 'bold',
+              width: '100%',
+              textAlign: 'right',
+              float: 'right',
+              cursor: 'pointer',
+            }}
+            onClick={() => setOpen(false)}
+          >
+          Close
+          </span>
+    </div>
+  );
 
  
     return (
@@ -92,18 +233,25 @@ const Post = ({displayName,username,verified,text,image,postId,timestamp,avater}
                         </h3> 
                   </div>
                   <div className="post__headerDescription">
-                    <p className="text__p">
-                    {text}  
-                    </p>
+                    <h5> {text}  </h5>
                   </div>
               </div>
 
              <div className="post__img"> 
-               <img  src={image} alt={displayName} />
+               <img  src={image} alt="" />
             </div>
 
           <div className="post__footer">
-          <ChatBubbleOutlineIcon fontSize="small" />
+            
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <ChatBubbleOutlineIcon onClick={handleOpen} fontSize="small" />
+            <span
+              style={{ marginLeft: '5px', fontSize: '16px', fontWeight: '600' }}
+            >
+              {totalComments?.length}
+            </span>
+          </div>
+           
             <RepeatIcon fontSize="small" />
 
  
@@ -144,11 +292,20 @@ const Post = ({displayName,username,verified,text,image,postId,timestamp,avater}
               </span>
             </div>
           )}
-
-
-            <PublishIcon fontSize="small" />
+ 
+            <PublishIcon fontSize="small"  />
+             
+             
           </div>
           </div>
+          <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal>
        </div>
     );
 };

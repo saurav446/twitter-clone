@@ -2,20 +2,16 @@
   display: flex;
   align-items: flex-start;
   border-bottom: 1px solid var(--twitter-background);
-  padding-bottom: 10px;
+  padding-bottom: 10px; 
 }
 
 .post__body {
   flex: 1;
   padding: 10px;
   width: 400px;
-  margin-right: 2rem;
+  margin-right: 2rem; 
 }
 
- 
-.post__body p{
-  width: 400px;
-}
 .post__img > img{
   border-radius: 20px;
   width: 100%;
@@ -28,9 +24,9 @@
   margin-top: 20px;
 }
 
-.post__headerDescription {
+.post__header h5{
   margin-bottom: 10px;
-  font-size: 15px;
+  font-size: 15px;  
 }
 
 .post__headerText > h3 {
@@ -52,6 +48,8 @@
 .post__avatar {
   padding: 20px;
 }
+
+ 
 @media all and (max-width: 768px){
   .post{
       flex: 1 1;
@@ -59,4 +57,31 @@
   .feed{
     width: 100%;
   }
+  .makeStyles-paper-1{
+    height: 50vh !important;
+  }
+}
+
+@media all and (max-width: 1160px){
+  .feed{ 
+      flex: 1;
+  }
+}
+@media all and (max-width: 520px){
+   
+  .post{
+    width: 400px;
+  } 
+  .makeStyles-paper-1{
+    width:90vw !important;
+  }
+}
+
+
+@media all and (max-width: 430px){
+   
+  .post{
+    width: 320px;
+  }
+   
 }

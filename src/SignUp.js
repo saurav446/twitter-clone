@@ -61,6 +61,7 @@ const Signup = () => {
           ref={register({ required: true })}
           type="email"
           placeholder="Email"
+          required
         /> 
            <br />
         {errors.email && <span>Email field is required!</span>}

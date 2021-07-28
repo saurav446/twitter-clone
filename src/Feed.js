@@ -2,7 +2,9 @@ import React,{ useEffect ,useState} from 'react';
 import './feed.css'
 import db from './firebase';
 import Post from './Post';
-import TweetBox from './TweetBox';
+import TweetBox from './TweetBox'; 
+ 
+import Auth from './useAuth';
 
 const Feed = () => {
     const [posts,setPosts] = useState([]);
@@ -14,9 +16,13 @@ const Feed = () => {
             setPosts( snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })))
         ))
     },[])
+    
+ 
+  
+    
    
     return (
-        <div className="feed">
+        <div className="feed"> 
             <div className="feed__header">
             <h2>Home</h2>
             </div> 
@@ -35,6 +41,8 @@ const Feed = () => {
                     />        
                 ) 
             }
+          
+      
              
         </div>
     );

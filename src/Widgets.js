@@ -1,4 +1,4 @@
-import React from 'react'; 
+import React, { useState } from 'react'; 
 import {
     TwitterTimelineEmbed,
     TwitterShareButton,
@@ -8,12 +8,17 @@ import {
   
 import './Widgets.css';
 
+ 
+
 const Widgets = () => {
+   
+
     return (
         <div className="widgets">
-            <div className="widgets__input"> 
-                    <SearchIcon className="widgets__searchIcon" />
-                    <input className="input__all" placeholder="Search Tweet" type="text" /> 
+   
+            <div className="widgets__input">
+                <SearchIcon />
+                <input type="text" placeholder="Search Twitter" />
             </div>
             <div className="widgets__widgetsContainer">
                <h2>What's happening</h2>
@@ -24,12 +29,11 @@ const Widgets = () => {
                 screenName="Saurav Barua"
                 options={{ height: 400 }}
                 />
-
-                {/* <TwitterShareButton
-                 
-                url={"https://facebook.com/interpid.pronay"}
-                options={{ text: "#reactjs is awesome", via: "Saurav Barua" }}/> */}
+         
             </div>
+ 
+
+
         </div>
     );
 };
